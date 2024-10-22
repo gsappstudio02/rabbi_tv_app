@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:rabbi_tv_app/home_page/home_page_screen.dart';
 import 'package:rabbi_tv_app/models/cor_palete.dart';
@@ -38,7 +39,12 @@ class _MyAppState extends State<MyApp> {
   }
   @override
   Widget build(BuildContext context) {
-
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.blue, // Default status bar color
+        statusBarIconBrightness: Brightness.light, // Default icon brightness
+      ),
+    );
 
     return MaterialApp(
       title: 'Flutter Demo',

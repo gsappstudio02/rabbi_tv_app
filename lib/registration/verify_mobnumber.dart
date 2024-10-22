@@ -50,7 +50,7 @@ class _VerifyOTPState extends State<VerifyOTP> {
     });
     print(response.body);
     if(response.body.contains('0')){
-      Navigator.push(context, MaterialPageRoute(builder: (builder)=>CreateProfile(mob_nuumber: widget.mobNumber,)));
+      Navigator.push(context, MaterialPageRoute(builder: (builder)=>CreateProfile(mob_nuumber: widget.mobile_with_no_code,)));
     }
     else{
       upDateMobNumber();
@@ -258,6 +258,7 @@ class _VerifyOTPState extends State<VerifyOTP> {
   Future<void> upDateMobNumber() async {
     var sharedPref = await SharedPreferences.getInstance();
     sharedPref.setString('MobNumber', widget.mobile_with_no_code);
+    sharedPref.setBool('GuestUser', false);
     print(sharedPref.getString('MobNumber'));
   }
 }

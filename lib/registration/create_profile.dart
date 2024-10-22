@@ -57,15 +57,7 @@ class _CreateProfileState extends State<CreateProfile> {
             }
 
             else {
-              Fluttertoast.showToast(
-                  msg: "valid OTP",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  //backgroundColor: primaryColor,
-                  textColor: Colors.white,
-                  fontSize: 16.0
-              );
+
               //upDateMobNumber();
               ReadJsonData();
             }
