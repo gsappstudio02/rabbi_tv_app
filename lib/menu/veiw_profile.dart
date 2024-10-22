@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:rabbi_tv_app/appwritemodel/appwrite_model.dart';
 import 'package:rabbi_tv_app/registration/onboarding_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:status_bar_control/status_bar_control.dart';
@@ -141,6 +142,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       GestureDetector(
                         onTap: (){
                           logOut();
+                          logoutSession();
                           Navigator.push(context, MaterialPageRoute(builder: (builder)=>OnboardingPage()));
                         },
                         child: Row(

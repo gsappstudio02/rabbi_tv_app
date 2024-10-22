@@ -1,13 +1,17 @@
 import 'dart:math';
-
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:rabbi_tv_app/appwritemodel/appwrite_model.dart';
 import 'package:rabbi_tv_app/menu/privacy_policy.dart';
 import 'package:rabbi_tv_app/menu/rems_conditions.dart';
 import 'package:rabbi_tv_app/registration/verify_mobnumber.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../home_page/home_page_screen.dart';
+
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({Key? key}) : super(key: key);
@@ -33,6 +37,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Widget build(BuildContext context) {
     double height_size=MediaQuery.of(context).size.height;
     double width_size=MediaQuery.of(context).size.width;
+    String country_code="+91";
+    String user_id='';
+
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: EdgeInsets.only(left: 20, right: 20, bottom: 30),
@@ -62,18 +69,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
             }
             else{
               print(mobileNumber.text);
-              generateRandomNumber();
-              print(_randomNumber);
-              Fluttertoast.showToast(
-                  msg: _randomNumber.toString(),
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  //backgroundColor: primaryColor,
-                  textColor: Colors.white,
-                  fontSize: 16.0
-              );
-              Navigator.push(context, MaterialPageRoute(builder: (builder)=>VerifyOTP(mobNumber: mobileNumber.text, numberOTP: _randomNumber.toString())));
+              print(country_code+mobileNumber.text);
+              sendOTPToVerify(mobile: country_code+mobileNumber.text);
+              Navigator.push(context, MaterialPageRoute(builder: (builder)=>VerifyOTP(mobNumber: country_code+mobileNumber.text, numberOTP: _randomNumber.toString(), mobile_with_no_code: mobileNumber.text,)));
             }
           },
           child: Container(
@@ -90,6 +88,31 @@ class _OnboardingPageState extends State<OnboardingPage> {
             ),
           ),
         ),
+      ),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        actions: [
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  print('Edison is a pagal admi');
+                  var sharedPref= await SharedPreferences.getInstance();
+                  sharedPref.setBool('GuestUser', true);
+                  Navigator.push(context, MaterialPageRoute(builder: (builder)=>HomePageScreen()));
+                },
+                child: Text('Skip', style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: '',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold
+                ),),
+              ),
+              SizedBox(width: 20,)
+            ],
+          )
+        ],
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -116,9 +139,24 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   ),
                   child: Row(
                     children: [
-                      SizedBox(width: 10),
-                      Text('+91', style: TextStyle(fontSize: 18, color: Colors.grey),),
-                      SizedBox(width: 10,),
+                      CountryCodePicker(
+                        initialSelection: 'IN',
+                        showCountryOnly: true,
+                        backgroundColor: Colors.transparent,
+                        alignLeft: false,
+                        showFlag: true,
+                        flagWidth: 30,
+                        padding: EdgeInsets.only(left: 1),
+                        onChanged: (value){
+                          print(value);
+                          setState(() {
+                            country_code=value.toString();
+                          });
+                          print(country_code);
+                        },
+                        boxDecoration: BoxDecoration(
+                        ),
+                      ),
                       Text('|', style: TextStyle(fontSize: 33, color: Colors.grey),),
                       SizedBox(width: 10,),
                       Expanded(
@@ -126,14 +164,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                               controller: mobileNumber,
                               decoration: InputDecoration(border: InputBorder.none, hintText: 'Phone', hintStyle: TextStyle(color: Colors.grey)),
                               keyboardType: TextInputType.phone,
-                              onChanged: (value){
-                                if(value.length>=10){
-                                  FocusScope.of(context).unfocus();
-                                }
-                              },
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(10),
-                              ]
+
                           )
                       )
                     ],
@@ -172,8 +203,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     ]
                   ),
                 textAlign: TextAlign.center,
-              )
-
+              ),
+              SizedBox(height: 80,),
             ],
           ),
         ),

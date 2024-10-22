@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:otp_timer_button/otp_timer_button.dart';
 import 'package:pinput/pinput.dart';
+import 'package:rabbi_tv_app/appwritemodel/appwrite_model.dart';
 import 'package:rabbi_tv_app/home_page/home_page_screen.dart';
 import 'package:rabbi_tv_app/models/cor_palete.dart';
 import 'package:rabbi_tv_app/registration/create_profile.dart';
@@ -14,9 +15,10 @@ import 'package:http/http.dart' as http;
 import 'package:status_bar_control/status_bar_control.dart';
 
 class VerifyOTP extends StatefulWidget {
-  const VerifyOTP({Key? key, required this.mobNumber, required this.numberOTP}) : super(key: key);
+  const VerifyOTP({Key? key, required this.mobNumber, required this.numberOTP, required this.mobile_with_no_code}) : super(key: key);
   final String mobNumber;
   final String numberOTP;
+  final String mobile_with_no_code;
 
   @override
   State<VerifyOTP> createState() => _VerifyOTPState();
@@ -25,6 +27,7 @@ class VerifyOTP extends StatefulWidget {
 class _VerifyOTPState extends State<VerifyOTP> {
   OtpTimerButtonController resendController = OtpTimerButtonController();
   late String resentOTP='0000000';
+  bool verification= false;
   final Random _random =
   Random(); // Create a Random object for generating random numbers
   int _randomNumber = 0;
@@ -42,7 +45,7 @@ class _VerifyOTPState extends State<VerifyOTP> {
         false, animation: StatusBarAnimation.SLIDE);
     var url = "https://www.aaradhna.app/rabbi_app/check_account.php";
     var response = await http.post(Uri.parse(url), body: {
-      "mob_number": widget.mobNumber,
+      "mob_number": widget.mobile_with_no_code,
 
     });
     print(response.body);
@@ -87,8 +90,10 @@ class _VerifyOTPState extends State<VerifyOTP> {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.only(left: 20, right: 20, bottom: 30),
         child: GestureDetector(
-          onTap: () {
+          onTap: () async{
             print(enteredOTP);
+            print(widget.mobNumber.toString());
+
             if (enteredOTP == "") {
               Fluttertoast.showToast(
                   msg: "Please enter OTP",
@@ -100,31 +105,35 @@ class _VerifyOTPState extends State<VerifyOTP> {
                   fontSize: 16.0
               );
             }
-            else
-            if (enteredOTP != widget.numberOTP && enteredOTP != resentOTP) {
-              Fluttertoast.showToast(
-                  msg: "You entered invalid OTP",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  //backgroundColor: primaryColor,
-                  textColor: Colors.white,
-                  fontSize: 16.0
-              );
-            }
-            else {
-              Fluttertoast.showToast(
-                  msg: "valid OTP",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  //backgroundColor: primaryColor,
-                  textColor: Colors.white,
-                  fontSize: 16.0
-              );
-              //upDateMobNumber();
-              ReadJsonData();
+            else{
+              verification= await verifyOTP(secret: enteredOTP, mobile: widget.mobNumber, userId: widget.mobNumber.replaceAll("+", ""));
+              if(verification){
+                ReadJsonData();
               }
+              else{
+                Fluttertoast.showToast(
+                    msg: "Invalid OTP",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    //backgroundColor: primaryColor,
+                    textColor: Colors.white,
+                    fontSize: 16.0
+                );
+              }
+            }
+
+            // if ( ) {
+            //   Fluttertoast.showToast(
+            //       msg: "You entered invalid OTP",
+            //       toastLength: Toast.LENGTH_SHORT,
+            //       gravity: ToastGravity.BOTTOM,
+            //       timeInSecForIosWeb: 1,
+            //       //backgroundColor: primaryColor,
+            //       textColor: Colors.white,
+            //       fontSize: 16.0
+            //   );
+            // }
           },
           child: Container(
             alignment: Alignment.center,
@@ -174,19 +183,22 @@ class _VerifyOTPState extends State<VerifyOTP> {
 
               //OTP Number Input
 
-              Container(
-                alignment: Alignment.center,
-                child: Pinput(
-                  length: 4,
-                  defaultPinTheme: defaultPinTheme,
-                  focusedPinTheme: defaultPinTheme,
-                  submittedPinTheme: submittedPinTheme,
-                  pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-                  showCursor: true,
-                  onCompleted: (pin) =>
-                      setState(() {
-                        enteredOTP = pin;
-                      }),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Pinput(
+                    length: 6,
+                    defaultPinTheme: defaultPinTheme,
+                    focusedPinTheme: defaultPinTheme,
+                    submittedPinTheme: submittedPinTheme,
+                    pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+                    showCursor: true,
+                    onCompleted: (pin) =>
+                        setState(() {
+                          enteredOTP = pin;
+                        }),
+                  ),
                 ),
               ),
               SizedBox(height: 8,),
@@ -205,24 +217,25 @@ class _VerifyOTPState extends State<VerifyOTP> {
                     //height: 60,
                     onPressed: () {
                       //SendOTP mechanism
-                      generateRandomNumber();
-                      print(_randomNumber);
-                      String nxtScreenNumber = _randomNumber
-                          .toString(); // Needs to be removed after OTP implement
-                      setState(() {
-                        resentOTP = _randomNumber.toString();
-                      });
-                      print(resentOTP);
-                      Fluttertoast.showToast(
-                          msg: "Please enter in next Screen: " +
-                              nxtScreenNumber,
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          //backgroundColor: primaryColor,
-                          textColor: Colors.white,
-                          fontSize: 16.0
-                      );
+                      // generateRandomNumber();
+                      // print(_randomNumber);
+                      // String nxtScreenNumber = _randomNumber
+                      //     .toString(); // Needs to be removed after OTP implement
+                      // setState(() {
+                      //   resentOTP = _randomNumber.toString();
+                      // });
+                      // print(resentOTP);
+                      // Fluttertoast.showToast(
+                      //     msg: "Please enter in next Screen: " +
+                      //         nxtScreenNumber,
+                      //     toastLength: Toast.LENGTH_SHORT,
+                      //     gravity: ToastGravity.BOTTOM,
+                      //     timeInSecForIosWeb: 1,
+                      //     //backgroundColor: primaryColor,
+                      //     textColor: Colors.white,
+                      //     fontSize: 16.0
+                      // );
+                      sendOTPToVerify(mobile: widget.mobNumber);
                     },
                     text: Text(
                       'Resend OTP',
@@ -244,7 +257,7 @@ class _VerifyOTPState extends State<VerifyOTP> {
 
   Future<void> upDateMobNumber() async {
     var sharedPref = await SharedPreferences.getInstance();
-    sharedPref.setString('MobNumber', widget.mobNumber);
+    sharedPref.setString('MobNumber', widget.mobile_with_no_code);
     print(sharedPref.getString('MobNumber'));
   }
 }

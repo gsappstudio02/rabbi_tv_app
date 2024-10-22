@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:rabbi_tv_app/home_page/homeScreenContent.dart';
 import 'package:rabbi_tv_app/live/live_videos.dart';
@@ -56,13 +59,16 @@ class _NavBarMenuState extends State<NavBarMenu> {
           ],
         ),
       ),
-      body: DoubleBackToCloseApp(
+      body: WillPopScope(
           child: _child,
-        snackBar: const SnackBar(
-          content: Text('Tap back again to leave'),
-        ),
+        onWillPop: () =>handlwIllPop(context),
       )
     );
+  }
+  Future<bool> handlwIllPop(BuildContext context) async{
+    print('back is pressed');
+    Platform.isIOS ?exit(0):SystemNavigator.pop();
+    return true;
   }
 }
 

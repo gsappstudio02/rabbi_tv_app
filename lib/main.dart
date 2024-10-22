@@ -53,9 +53,9 @@ class _MyAppState extends State<MyApp> {
   Future<void> whereToGO() async{
     var sharedPref= await SharedPreferences.getInstance();
     var isLogged=sharedPref.getString('MobNumber')??"000";
-
+    var isGuest= sharedPref.getBool("GuestUser");
     print(isLogged);
-    if(isLogged=="000"){
+    if(isLogged=="000" && isGuest==false){
       setState(() {
         _child=OnboardingPage();
       });

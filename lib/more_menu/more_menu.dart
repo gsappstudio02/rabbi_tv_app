@@ -9,6 +9,7 @@ import 'package:rabbi_tv_app/menu/rems_conditions.dart';
 import 'package:rabbi_tv_app/menu/support_channel.dart';
 import 'package:rabbi_tv_app/menu/veiw_profile.dart';
 import 'package:rabbi_tv_app/menu/why_this_platform.dart';
+import 'package:rabbi_tv_app/registration/onboarding_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:status_bar_control/status_bar_control.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -25,6 +26,7 @@ class MoreMenu extends StatefulWidget {
 
 class _MoreMenuState extends State<MoreMenu> {
   String mobNumber='';
+  bool isGuest=false;
   @override
   void initState() {
     // TODO: implement initState
@@ -77,183 +79,360 @@ class _MoreMenuState extends State<MoreMenu> {
             builder: (_, data){
               if(data.hasData){
                 var items=data.data as List<Live_feeds>;
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (builder)=>ProfilePage(mobNumber: mobNumber, email: items[0].email.toString(), name: items[0].name.toString(),)));
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.asset('assets/images/profile.jpg', height: 70, width: 70,),
-                              ),
-                              SizedBox(width: 20,),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                if(items.length==0){
+                   return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>SupportChannel()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.support, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('Get Help', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>AboutUs()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.information, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('About Us', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>WhyThisPlatform()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.message_question, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('Why this platform', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>EventsPage()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.calendar_2, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('Events', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>ContactPage()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.message, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('Contact', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>FAQPage()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.book_1, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('FAQ', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>PrivacyPolicy()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.security_safe, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('Privacy Policy', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>TermsAndConditions()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.book, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('Terms and Conditons', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                            padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                            child: GestureDetector(
+                              onTap: () async {
+                                await launchUrl(Uri.parse('https://2ly.link/1ybMI'));
+                              },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(items[0].name.toString(), style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w800),),
-                                  Text('+91 '+mobNumber, style: TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.w800),),
+                                  Icon(Iconsax.coin, size: 25,),
+                                  SizedBox(width: 8,),
+                                  Text('Support', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
                                 ],
                               ),
-                              Expanded(child: SizedBox(width: 20,)),
-                              Expanded(child: Icon(Icons.keyboard_arrow_right))
-                            ],
+                            )
+                        ),
+                        SizedBox(height: 16,),
+                        Padding(
+                          padding: EdgeInsets.only(left: 20, right: 20, bottom: 30),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>OnboardingPage()));
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.green
+                              ),
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * .9,
+                              height: 55,
+                              child: Text('Login', style: TextStyle(color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 18),),
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 16,),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 18.0, bottom: 18),
-                        child: GestureDetector(
+                      ],
+                    ),
+                  );
+                }
+                else
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        GestureDetector(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (builder)=>SupportChannel()));
+                            Navigator.push(context, MaterialPageRoute(builder: (builder)=>ProfilePage(mobNumber: mobNumber, email: items[0].email.toString(), name: items[0].name.toString(),)));
                           },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Iconsax.support, size: 25,),
-                              SizedBox(width: 8,),
-                              Text('Get Help', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
-                            ],
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.asset('assets/images/profile.jpg', height: 70, width: 70,),
+                                ),
+                                SizedBox(width: 20,),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(items[0].name.toString(), style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w800),),
+                                    Text('+91 '+mobNumber, style: TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.w800),),
+                                  ],
+                                ),
+                                Expanded(child: SizedBox(width: 20,)),
+                                Expanded(child: Icon(Icons.keyboard_arrow_right))
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 18.0, bottom: 18),
-                        child: GestureDetector(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (builder)=>AboutUs()));
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Iconsax.information, size: 25,),
-                              SizedBox(width: 8,),
-                              Text('About Us', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
-                            ],
+                        SizedBox(height: 16,),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>SupportChannel()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.support, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('Get Help', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 18.0, bottom: 18),
-                        child: GestureDetector(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (builder)=>WhyThisPlatform()));
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Iconsax.message_question, size: 25,),
-                              SizedBox(width: 8,),
-                              Text('Why this platform', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
-                            ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>AboutUs()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.information, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('About Us', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 18.0, bottom: 18),
-                        child: GestureDetector(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (builder)=>EventsPage()));
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Iconsax.calendar_2, size: 25,),
-                              SizedBox(width: 8,),
-                              Text('Events', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
-                            ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>WhyThisPlatform()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.message_question, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('Why this platform', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 18.0, bottom: 18),
-                        child: GestureDetector(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (builder)=>ContactPage()));
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Iconsax.message, size: 25,),
-                              SizedBox(width: 8,),
-                              Text('Contact', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
-                            ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>EventsPage()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.calendar_2, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('Events', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 18.0, bottom: 18),
-                        child: GestureDetector(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (builder)=>FAQPage()));
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Iconsax.book_1, size: 25,),
-                              SizedBox(width: 8,),
-                              Text('FAQ', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
-                            ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>ContactPage()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.message, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('Contact', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 18.0, bottom: 18),
-                        child: GestureDetector(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (builder)=>PrivacyPolicy()));
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Iconsax.security_safe, size: 25,),
-                              SizedBox(width: 8,),
-                              Text('Privacy Policy', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
-                            ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>FAQPage()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.book_1, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('FAQ', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 18.0, bottom: 18),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (builder)=>TermsAndConditions()));
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Iconsax.book, size: 25,),
-                              SizedBox(width: 8,),
-                              Text('Terms and Conditons', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
-                            ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>PrivacyPolicy()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.security_safe, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('Privacy Policy', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 18.0, bottom: 18),
-                        child: GestureDetector(
-                          onTap: () async {
-                            await launchUrl(Uri.parse('https://2ly.link/1ybMI'));
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Iconsax.coin, size: 25,),
-                              SizedBox(width: 8,),
-                              Text('Support', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
-                            ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (builder)=>TermsAndConditions()));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Iconsax.book, size: 25,),
+                                SizedBox(width: 8,),
+                                Text('Terms and Conditons', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              ],
+                            ),
                           ),
-                        )
-                      ),
-                    ],
-                  ),
-                );
+                        ),
+                        Padding(
+                            padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                            child: GestureDetector(
+                              onTap: () async {
+                                await launchUrl(Uri.parse('https://2ly.link/1ybMI'));
+                              },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(Iconsax.coin, size: 25,),
+                                  SizedBox(width: 8,),
+                                  Text('Support', style: TextStyle(color: Pallette.textColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                                ],
+                              ),
+                            )
+                        ),
+                      ],
+                    ),
+                  );
               }
               else{
                 return Center(child: CircularProgressIndicator());
@@ -268,7 +447,11 @@ class _MoreMenuState extends State<MoreMenu> {
 
   Future<void> getMobNumber() async {
     var sharedPref= await SharedPreferences.getInstance();
+    print('this is what I got');
+    print(mobNumber);
+    print(sharedPref.getString('MobNumber'));
     mobNumber=sharedPref.getString('MobNumber')!;
+    isGuest=sharedPref.getBool('GuestUser')!;
   }
 }
 class Live_feeds {
